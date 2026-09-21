@@ -17,7 +17,7 @@ Requires Node.js 22.12+ (tested with Node 24).
 ```sh
 npm ci
 cp .env.example .env.local
-# Set the server-side development key. Never commit it.
+# Set the server-side Orbio key. Never commit it.
 npm run dev
 ```
 
@@ -35,7 +35,7 @@ This repository currently runs as a local Node service. A GitHub import into Ver
 2. Select **购买前查出处**, then **试填真实 NFT 链接**. This fills the real Loot #1 link. Click **帮我查一下** to run an actual network/model check. No correct reference address is needed.
 3. Select **核验活动消息** and **试填真实活动链接** for Orbio Build Week. To test claim conflict, enter a message claiming $500 of inference and compare it against the official page.
 
-Example-fill buttons only fill the input. Investigations make actual model calls and consume development credits when submitted. Legacy synthetic/reference comparison records remain stored and their old deep links display a clear legacy label. New consumer history does not present old research as independent verification.
+Example-fill buttons only fill the input. Investigations make actual model calls and consume credits from the configured provider when submitted. Legacy synthetic/reference comparison records remain stored and their old deep links display a clear legacy label. New consumer history does not present old research as independent verification.
 
 ## Evidence and coverage
 
@@ -50,16 +50,16 @@ Example-fill buttons only fill the input. Investigations make actual model calls
 
 The model actually chooses `inspect_nft`, `find_official_sources`, `read_page`, `check_domains`, and `finish_investigation`. It follows gaps in evidence and cites returned evidence IDs. Max 8 model turns / 12 evidence calls; user can stop. The application stores public action descriptions, not private chain-of-thought. Deterministic URL, domain and citation checks support the agent.
 
-The current acceptance records use an OpenAI-compatible development provider and `deepseek-v4.1-flash`. The UI explicitly identifies this as a development preview. End-to-end acceptance with an actual Orbio-issued key is still pending. To switch, edit `.env.local` and restart:
+On 2026-09-21, the actual Orbio-issued key passed authentication, chat and live tool-call checks using the configuration below. One activity investigation completed in 47 seconds, but it confused the build deadline with submission status; after tightening the investigation instructions, a further run read the real submission page but timed out while generating its report. Two live runs hit the existing 90-second model timeout. Connectivity is verified; reliable end-to-end acceptance remains incomplete. Earlier three-flow acceptance used the substitute development provider. See [ACCEPTANCE.md](./ACCEPTANCE.md) for the exact runs. Edit `.env.local` and restart:
 
 ```dotenv
 AI_PROVIDER=orbio
-AI_BASE_URL=<chat API base provided with your Orbio key>
+AI_BASE_URL=https://api.orbio.so/api/v1
 AI_API_KEY=<your Orbio-issued key>
-AI_MODEL=<tool-calling model supported by that endpoint>
+AI_MODEL=deepseek/deepseek-v4.1-flash
 ```
 
-The [starter](https://github.com/aster2709/orbio-starter) documents OpenRouter-issued keys with `https://openrouter.ai/api/v1`; use the endpoint supplied with the actual issued key rather than guessing a newer Orbio gateway address. Both base URL and full `/chat/completions` URL are accepted. Switching configuration changes all model inference, not just branding.
+The current [Orbio gateway](https://www.orbio.so/) uses `https://api.orbio.so/api/v1` for OpenAI-compatible chat. `/api` alone is the Anthropic-compatible base. Older OpenRouter-issued keys described in the [starter](https://github.com/aster2709/orbio-starter) use `https://openrouter.ai/api/v1` instead; match the endpoint to the issuer of your key. Both base URL and full `/chat/completions` URL are accepted. Switching configuration changes all model inference, not just branding. The adapter omits `parallel_tool_calls`: sending `false` caused this Orbio/model combination to return HTTP 404, while the same request without it succeeded. Returned tool calls are executed sequentially by the application.
 
 ## Data handling and implementation
 

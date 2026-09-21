@@ -36,7 +36,7 @@ Earlier QA runs are retained as historical records and can contain pre-fix limit
 - Public blocklist delayed approximately 7 days; cache lasts one hour. A miss cannot establish safety.
 - Localhost preview, single local history; no public multi-user deployment performed.
 - No real-user interviews, willingness-to-pay study or representative accuracy study was conducted.
-- Actual Orbio-key end-to-end testing remains pending the user's final key and matching endpoint, as previously requested. All live checks here used the substitute provider.
+- The September 17 checks above used the substitute provider. Actual Orbio connectivity and the remaining reliability/accuracy gaps are recorded in the September 21 follow-up below.
 
 ## Follow-up: first-request timeout feedback
 
@@ -71,3 +71,23 @@ User case `bf32dca9-5024-45e0-83a1-a3bde149226a` (Arc主网上线了！) failed 
 - 三个场景分别进入 `/app?flow=wallet|purchase|message`，对应场景已选中；语言偏好跨页面继承。旧 `/?case=5206e92c-773c-4039-824c-297e8a4f2778` 自动变为 `/app?case=…`，报告正文及刷新读取正常。
 - 所检查页面未发现浏览器 console warning/error。首页验收没有启动新的调查或消耗模型额度。减弱动态效果由 CSS 媒体查询与 Canvas 监听共同处理；暂停后恢复保留球体位置。
 - 25 项现有测试及 TypeScript / Vite 生产构建通过。没有公开部署或提交参赛；真实 Orbio 接口的最终验收仍待用户提供对应配置。
+
+
+## 2026-09-21 Real Orbio key and application integration
+
+- Used the actual user-configured Orbio key, kept only in ignored `.env.local`. Ordinary chat returned HTTP 200 / `OK` with the intended `deepseek/deepseek-v4.1-flash` model. The local UI and run metadata identify Orbio.
+- Corrected the local configuration to the OpenAI-compatible `https://api.orbio.so/api/v1` base and the full model ID. `/api` alone is the Anthropic-compatible base. Updated the credential-free environment template and README for reproducibility.
+- Diagnosed HTTP 404 from the original tool-call request: the gateway returned `model_not_available`. Removing only `parallel_tool_calls: false` from the otherwise identical probe allowed a real `find_official_sources` call. Removed that optional parameter from the adapter; the application already executes returned calls sequentially.
+- Submitted the same public activity claim through the actual browser: “Orbio Build Week 是一个面向 AI Agent 开发者的活动，现在已开放项目提交。https://sellers.orbio.so/build”. No synthetic evidence or substitute inference was used in these runs.
+
+| Run | Result |
+| --- | --- |
+| `97504787-3f3a-46b8-b623-fc34307e6d27` | Before the parameter fix: HTTP 404, zero successful model replies and no evidence. |
+| `4a321ae6-63a3-48c0-9d0d-1430e9f04fb6` | After the fix: one model reply selected two real source reads. Both succeeded; the next model request exceeded 90 seconds. No final report. |
+| `ba98ace2-4639-4112-b42a-20a0f76f3e34` | Completed in 46.8 seconds, two model replies, 12,250 reported tokens and two evidence records. Browser showed a cited report. Its conflict verdict was incorrect: it treated the end of applications/building as the end of submissions despite the page saying submissions were open. This is a connectivity result, not a passed accuracy check. |
+| `f6947be9-15e1-4283-84c9-60cfe07efb67` | After the phase-distinction prompt fix: two model replies, 11,916 reported tokens and three real source records, including `/build/submit`. The final model request exceeded 90 seconds; no final report. The live run demonstrated following the submission link, but did not validate a corrected final verdict. |
+
+- Added a general instruction to distinguish registration, building, submission and judging, follow the actual submission link and reconcile current status with the timeline. This does not hardcode an Orbio verdict or guarantee semantic accuracy.
+- The cause of the two response timeouts beyond the configured 90-second wait is not established. A successful retry does not prove sustained availability; no automatic paid retries or model fallback were added.
+- Final `npm test`: 25/25 pass. TypeScript check and Vite production build pass. Key and local investigation data remain ignored by Git; the current key is absent from tracked working files.
+- Acceptance status: actual Orbio authentication and tool calling verified; reliable full-report acceptance remains incomplete. Wallet/purchase flows have not been rerun with the real Orbio key. No public deployment or competition submission was performed.
