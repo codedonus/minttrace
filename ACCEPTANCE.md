@@ -99,3 +99,11 @@ User case `bf32dca9-5024-45e0-83a1-a3bde149226a` (Arc主网上线了！) failed 
 - Cloud reports are saved in each visitor's browser; no server JSON file or shared report API is used. Local Node development keeps its existing JSON history.
 - All 29 behavior tests passed, including streaming the real agent loop with fixture model/tool responses, request cancellation, deadline handling, visitor-history isolation and split UTF-8 stream decoding. Production TypeScript/Vite build passed. These tests did not consume model credits.
 - A local cloud-mode browser preview displayed streamed progress and a completed, clearly labelled synthetic report. Live Vercel deployment and real Orbio inference are separate acceptance checks; fixture completion is not evidence of live model reliability.
+
+### Live Vercel acceptance
+
+Deployment `f24ac2c` succeeded on Vercel. Both `https://getminttrace.vercel.app/app` and `https://minttrace.chainmaker.dev/app` loaded the workspace, and both `/api/config` endpoints returned `configured: true`, `provider: "Orbio"`, and `storage: "browser"`. The shared history endpoint correctly returned 404.
+
+A real browser-submitted investigation (`936e8ab0-db13-4557-898a-daa73d81559a`, started 2026-09-21 12:01 UTC) asked whether Orbio Build Week is a developer event. It completed with 3 Orbio model calls, 22,546 reported tokens and 3 evidence records (the activity page, independently found official entry and submission page). The final cited report distinguished the ended build period from the submission phase. The downloaded Markdown report recorded `completed` and the configured Orbio model. This verifies one cloud activity flow; it does not establish reliability across every input or complete the other two flows' Orbio acceptance.
+
+The local fixture browser check also confirmed that reports survive refresh and that Stop preserves collected evidence.
