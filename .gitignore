@@ -1,0 +1,23 @@
+# Dependencies and generated output
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Local secrets and investigation records
+.env
+.env.*
+!.env.example
+data/
+*.log
+
+# Local tooling and deployment metadata
+.agents/
+.codex/
+.vercel/
+SUBMISSION_READINESS.md
+
+# OS files
+.DS_Store
+Thumbs.db
