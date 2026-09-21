@@ -48,7 +48,7 @@ export interface Report {
   sourceProof?: { url: string; quote: string; identity: "verified" | "unverified" };
 }
 export interface ModelFailure {
-  kind: "model_timeout" | "model_unavailable";
+  kind: "model_timeout" | "model_unavailable" | "investigation_timeout";
   timeoutMs?: number;
   httpStatus?: number;
 }
@@ -72,6 +72,7 @@ export interface Investigation {
   sampleReport?: boolean;
 }
 export interface PublicConfig {
+  storage?: "browser";
   provider: string;
   model: string;
   configured: boolean;

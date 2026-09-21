@@ -67,6 +67,10 @@ export function applicationError(message: string, locale: Locale) {
     'An investigation is already running. Finish or stop it before starting another.': '已有一项核验正在进行，请等待完成或先停止它。',
     'Investigation not found.': '找不到这条核验记录。',
     'The previous investigation was not found.': '找不到要复查的记录。',
+    'The investigation service is not configured.': '核验服务尚未配置好，请联系产品提供者。',
+    'The investigation service is unavailable.': '核验服务暂时不可用，请稍后重试。',
+    'The investigation service returned an unexpected response.': '核验接口返回异常，请稍后重试。',
+    'The connection ended before the investigation finished.': '连接提前中断，已获得的线索仍然保留。可以重新核验。',
     'Failed to fetch': '无法连接核验服务，请稍后重试。',
     'The request could not be processed.': '暂时无法处理请求，请稍后重试。',
   };

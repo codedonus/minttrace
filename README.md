@@ -23,11 +23,24 @@ npm run dev
 
 Open http://127.0.0.1:4173 for the product homepage, or http://127.0.0.1:4173/app for the investigation workspace. For a production build locally: `npm run build`, then `npm start`. On macOS, double-click `start.command` to locate Node, build and start.
 
-The server listens only on localhost. The current preview has one local history (`data/investigations.json`, ignored by git), no accounts and one active investigation. This is ready for local product testing, not a public multi-user deployment. Public deployment needs separate user histories and an appropriate access boundary.
+The local server listens only on localhost and keeps one local history in `data/investigations.json` (ignored by git). Vercel uses the separate request-scoped API described below.
 
-## Deployment status
+## Deploy on Vercel
 
-This repository currently runs as a local Node service. A GitHub import into Vercel alone is not a complete deployment of the investigation backend. Before public hosting, adapt local JSON persistence and background investigations to the hosting runtime, isolate visitor records, and apply usage limits to model requests. Hosting configuration and a public demo URL are not included yet.
+Import this repository with its root as the project root. `vercel.json` selects Vite, builds `dist`, routes `/app` to the React application and `/api/*` to the Node function. Configure these **server-side** environment variables for Production (and Preview if needed), then deploy:
+
+```dotenv
+AI_PROVIDER=orbio
+AI_BASE_URL=https://api.orbio.so/api/v1
+AI_MODEL=deepseek/deepseek-v4.1-flash
+AI_API_KEY=<your Orbio-issued key>
+```
+
+No `VITE_` key and no uploaded `.env.local` file are needed. Environment changes require a redeploy. Open `/api/config` to check `configured: true`, `provider: "Orbio"` and `storage: "browser"`; this endpoint never returns credentials.
+
+The cloud API streams each investigation while the function is running. It does not use a local JSON file or launch work after returning a response. Fluid compute is enabled with a 300-second function duration and a 270-second investigation deadline; the existing 90-second individual model timeout still applies. Closing the page or choosing Stop cancels the request. Refreshing shows the interrupted run with its collected evidence.
+
+Reports remain in the visitor's browser (up to 20 recent reports, trimmed for storage size), separate from other visitors. Clearing browser data removes them; download a report to keep/share it. Case links only work in the browser holding that record. There is no cloud account or cross-device history. Public investigations use the deployment owner's model credits, with the existing 8-turn/12-evidence-call per-run limits. No deployment-wide credit cap or authentication is built in; configure provider spending limits and Vercel traffic rules for a public demo.
 
 ## Try all three
 
@@ -69,7 +82,7 @@ Public URL reads block local/private destinations and check/pin DNS through redi
 
 `src/` UI · `server/consumer.ts` inputs/discovery/wallet/tools · `server/agent.ts` tool loop and evidence validation · `server/network.ts` source reader · `server/store.ts` local history · `tests/` behavior checks.
 
-Keep it simple: one React app, one Node service, one local JSON file. Rules are in [agent.md](./agent.md). The interface was developed using the UI/UX Pro Max workflow. Local agent tooling is excluded from the repository and is not needed to install, test or run the app.
+Keep it simple: one React app and Node API; local JSON for local use, browser history for Vercel. Rules are in [agent.md](./agent.md). The interface was developed using the UI/UX Pro Max workflow. Local agent tooling is excluded from the repository and is not needed to install, test or run the app.
 
 ## Validate
 

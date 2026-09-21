@@ -91,3 +91,11 @@ User case `bf32dca9-5024-45e0-83a1-a3bde149226a` (Arc主网上线了！) failed 
 - The cause of the two response timeouts beyond the configured 90-second wait is not established. A successful retry does not prove sustained availability; no automatic paid retries or model fallback were added.
 - Final `npm test`: 25/25 pass. TypeScript check and Vite production build pass. Key and local investigation data remain ignored by Git; the current key is absent from tracked working files.
 - Acceptance status: actual Orbio authentication and tool calling verified; reliable full-report acceptance remains incomplete. Wallet/purchase flows have not been rerun with the real Orbio key. No public deployment or competition submission was performed.
+
+
+## Vercel runtime adaptation (2026-09-21)
+
+- Added SPA routing for `/app` and a Node API function for `/api/*`. Cloud investigations execute within the streaming request, with cancellation and a 270-second overall deadline.
+- Cloud reports are saved in each visitor's browser; no server JSON file or shared report API is used. Local Node development keeps its existing JSON history.
+- All 29 behavior tests passed, including streaming the real agent loop with fixture model/tool responses, request cancellation, deadline handling, visitor-history isolation and split UTF-8 stream decoding. Production TypeScript/Vite build passed. These tests did not consume model credits.
+- A local cloud-mode browser preview displayed streamed progress and a completed, clearly labelled synthetic report. Live Vercel deployment and real Orbio inference are separate acceptance checks; fixture completion is not evidence of live model reliability.

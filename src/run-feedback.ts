@@ -6,6 +6,7 @@ export function failureFeedback(run: Pick<Investigation, 'status' | 'error' | 'f
   const collected=run.evidence.length;
   const progress=collected?t(`已保留 ${collected} 条资料，但还没有生成最终判断。`,`${collected} evidence records were kept, but no final assessment was produced. `):t('本次尚未取得任何调查资料，不能据此判断消息真假。','No evidence has been collected, so this does not establish whether the claim is true. ');
   if(run.status==='stopped')return{title:t('核验已停止','Check stopped'),description:collected?t(`已查到的 ${collected} 条资料仍保留在下面。`,`${collected} collected evidence records are kept below.`):t('本次没有取得调查资料。可以重新发起核验。','No evidence was collected. You can start a new check.')};
+  if(run.failure?.kind==='investigation_timeout')return{title:t('本次核验已达到时间上限','Investigation time limit reached'),description:progress+t('可以查看已有资料，或稍后重新核验。','Review the collected sources or try again later.')};
   const legacyTimeout=!run.failure&&run.modelCalls===0&&run.actions.length===0&&/timed out|timeout/i.test(run.error||'');
   if(run.failure?.kind==='model_timeout'||legacyTimeout){
     const seconds=Math.round((run.failure?.timeoutMs||90_000)/1000);
